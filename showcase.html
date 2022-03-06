@@ -50,7 +50,7 @@
   </a>
 
   <script>
-    // var baseUrl = 'file:///C:/Users/mahe/Desktop/New%20folder/index.html';
+    // var baseUrl = 'file:///C:/Users/mahe/Desktop/Universal Web Remote Control/index.html';
     var baseUrl = 'https://maheee.github.io/Universal-Web-Remote-Control/';
 
     var config = {
@@ -84,7 +84,14 @@
 
       rclib.onReady = function (peerId) {
         var link = rclib.createLink(baseUrl);
-        new QRCode(document.getElementById('qr'), link);
+        new QRCode(document.getElementById('qr'), {
+          text: link,
+          width: 128,
+          height: 128,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
+        });
         document.getElementById('qrlink').href = link;
       };
 

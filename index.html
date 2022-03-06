@@ -17,20 +17,37 @@
 </head>
 
 <body>
+  <header>
+    <h1>Universal Web Remote Control</h1>
+  </header>
+  <section id="loading">
+    <p>Connecting ...</p>
+  </section>
 
-  <div id="container"></div>
+  <section id="loaded" style="display: none">
+    <div id="buttonContainer">
+    </div>
+  </section>
+
+  <footer>
+    <a href="https://github.com/maheee/Universal-Web-Remote-Control" target="_blank">
+      https://github.com/maheee/Universal-Web-Remote-Control
+    </a>
+  </footer>
 
   <script>
-
     function handleConfig(conn, config) {
-      $('#container').empty();
+      $('#loading').hide();
+      $('#loaded').show();
+
+      $('#buttonContainer').empty();
       for (var button of config.buttons) {
         var button$ = $('<button>' + button.name + '</button>')
           .data("event", button.event)
           .click(function () {
             conn.send({ t: 'EVENT', event: $(this).data("event") });
           });
-        $('#container').append(button$);
+        $('#buttonContainer').append(button$);
       }
     }
 
