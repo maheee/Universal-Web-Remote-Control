@@ -12,32 +12,45 @@
   <link rel="manifest" href="./m/site.webmanifest">
   <link rel="shortcut icon" href="m/favicon.ico" />
 
-  <script type="text/javascript" src="v/jquery-3.6.0.slim.min.js"></script>
-  <script type="text/javascript" src="v/peerjs.min.js"></script>
+  <script type="text/javascript" src="vendor/jquery-3.6.0.slim.min.js"></script>
+  <script type="text/javascript" src="vendor/peerjs.min.js"></script>
 </head>
 
 <body>
 
+  <div id="container"></div>
+
   <script>
+
+    function handleConfig(conn, config) {
+      $('#container').empty();
+      for (var button of config.buttons) {
+        var button$ = $('<button>' + button.name + '</button>')
+          .data("event", button.event)
+          .click(function () {
+            conn.send({ t: 'EVENT', event: $(this).data("event") });
+          });
+        $('#container').append(button$);
+      }
+    }
+
     $(function () {
+      console.log('Connecting with PeerServer ...');
       var peer = new Peer();
       var peerId = new URLSearchParams(window.location.search).get('peerId');
 
       peer.on('open', function (id) {
+        console.log('Connecting with peer ...');
         var conn = peer.connect(peerId);
-        //conn.on('open', function () {
-        //});
-        //conn.on('close', function () {
-        //});
         conn.on('data', function (data) {
-          console.log('Received', data);
+          switch (data.t) {
+            case "CFG":
+              console.log('Received configuration.');
+              handleConfig(conn, data.config);
+              break;
+          }
         });
-        //console.log(conn);
-        // Send messages
-        // conn.send('Hello!');
       });
-
-
     });
   </script>
 </body>

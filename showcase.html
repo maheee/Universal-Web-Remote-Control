@@ -8,41 +8,97 @@
   <meta name="description" content="A universal website remote control.">
   <meta name="keywords" content="website remote control peerjs webrtc">
 
-  <link href="css/style.css" rel="stylesheet" type="text/css">
-  <link rel="manifest" href="./m/site.webmanifest">
+  <link rel="manifest" href="m/site.webmanifest">
   <link rel="shortcut icon" href="m/favicon.ico" />
 
-  <script type="text/javascript" src="v/jquery-3.6.0.slim.min.js"></script>
-  <script type="text/javascript" src="v/peerjs.min.js"></script>
-  <script type="text/javascript" src="v/qrcode.min.js"></script>
+  <script type="text/javascript" src="vendor/jquery-3.6.0.slim.min.js"></script>
+  <script type="text/javascript" src="vendor/peerjs.min.js"></script>
+  <script type="text/javascript" src="vendor/qrcode.min.js"></script>
   <script type="text/javascript" src="lib/receiver.js"></script>
+
+  <style>
+    .content {
+      display: flex;
+    }
+
+    .tab {
+      border: 8px solid lightgray;
+      padding: 8px;
+      flex: 1 1 auto;
+    }
+
+    .tab.active {
+      border-color: red;
+    }
+  </style>
 </head>
 
 <body>
+
+  <div id="content" class="content">
+    <div id="FACT_A" class="tab active">Factory A</div>
+    <div id="FACT_B" class="tab">Factory B</div>
+    <div id="FACT_C" class="tab">Factory C</div>
+    <div id="STAT" class="tab">Statistics</div>
+  </div>
+
+  <hr />
+
   <a id="qrlink" href="" target="_blank">
     <span id="qr">
     </span>
   </a>
 
   <script>
-    var baseUrl = "file:///C:/Users/mahe/Desktop/New%20folder/index.html";
+    // var baseUrl = 'file:///C:/Users/mahe/Desktop/New%20folder/index.html';
+    var baseUrl = 'https://maheee.github.io/Universal-Web-Remote-Control/';
+
+    var config = {
+      buttons: [
+        {
+          name: "Factory A",
+          event: "FACT_A"
+        },
+        {
+          name: "Factory B",
+          event: "FACT_B"
+        },
+        {
+          name: "Factory C",
+          event: "FACT_C"
+        },
+        {
+          name: "Statistics",
+          event: "STAT"
+        }
+      ]
+    };
+
+    function handleEvent(event) {
+      $('#content > *').removeClass('active');
+      $('#content > #' + event).addClass('active');
+    }
 
     $(function () {
       var rclib = createUWRC();
+
       rclib.onReady = function (peerId) {
         var link = rclib.createLink(baseUrl);
-        new QRCode(document.getElementById("qr"), link);
-        document.getElementById("qrlink").href = link;
+        new QRCode(document.getElementById('qr'), link);
+        document.getElementById('qrlink').href = link;
       };
+
       rclib.onConn = function (peerId) {
-        console.log("Conn", peerId);
+        rclib.send(peerId, { t: 'CFG', config });
       };
+
       rclib.onData = function (peerId, data) {
-        console.log("Data", peerId, data);
+        if (data.t == 'EVENT') {
+          handleEvent(data.event);
+        }
       };
 
       rclib.init();
-      console.log(rclib);
     });
   </script>
 </body>
