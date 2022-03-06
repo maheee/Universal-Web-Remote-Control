@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+  <title>Universal Web Remote Control - Showcase</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Language" content="en-us">
+  <meta name="description" content="A universal website remote control.">
+  <meta name="keywords" content="website remote control peerjs webrtc">
+
+  <link href="css/style.css" rel="stylesheet" type="text/css">
+  <link rel="manifest" href="./m/site.webmanifest">
+  <link rel="shortcut icon" href="m/favicon.ico" />
+
+  <script type="text/javascript" src="v/jquery-3.6.0.slim.min.js"></script>
+  <script type="text/javascript" src="v/peerjs.min.js"></script>
+  <script type="text/javascript" src="v/qrcode.min.js"></script>
+  <script type="text/javascript" src="lib/receiver.js"></script>
+</head>
+
+<body>
+  <a id="qrlink" href="" target="_blank">
+    <span id="qr">
+    </span>
+  </a>
+
+  <script>
+    var baseUrl = "file:///C:/Users/mahe/Desktop/New%20folder/index.html";
+
+    $(function () {
+      var rclib = createUWRC();
+      rclib.onReady = function (peerId) {
+        var link = rclib.createLink(baseUrl);
+        new QRCode(document.getElementById("qr"), link);
+        document.getElementById("qrlink").href = link;
+      };
+      rclib.onConn = function (peerId) {
+        console.log("Conn", peerId);
+      };
+      rclib.onData = function (peerId, data) {
+        console.log("Data", peerId, data);
+      };
+
+      rclib.init();
+      console.log(rclib);
+    });
+  </script>
+</body>
+
+</html>

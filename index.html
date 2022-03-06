@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+  <title>Universal Web Remote Control</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Language" content="en-us">
+  <meta name="description" content="A universal website remote control.">
+  <meta name="keywords" content="website remote control peerjs webrtc">
+
+  <link href="css/style.css" rel="stylesheet" type="text/css">
+  <link rel="manifest" href="./m/site.webmanifest">
+  <link rel="shortcut icon" href="m/favicon.ico" />
+
+  <script type="text/javascript" src="v/jquery-3.6.0.slim.min.js"></script>
+  <script type="text/javascript" src="v/peerjs.min.js"></script>
+</head>
+
+<body>
+
+  <script>
+    $(function () {
+      var peer = new Peer();
+      var peerId = new URLSearchParams(window.location.search).get('peerId');
+
+      peer.on('open', function (id) {
+        var conn = peer.connect(peerId);
+        //conn.on('open', function () {
+        //});
+        //conn.on('close', function () {
+        //});
+        conn.on('data', function (data) {
+          console.log('Received', data);
+        });
+        //console.log(conn);
+        // Send messages
+        // conn.send('Hello!');
+      });
+
+
+    });
+  </script>
+</body>
+
+</html>
